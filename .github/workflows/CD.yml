@@ -1,0 +1,37 @@
+name: server
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy spring MainServer(develop)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: |
+            cd ~/Server/backend
+            git checkout main
+            kill -9 $(lsof -t -i :8080)
+            git add .
+            git commit -m "temp commit"
+            git fetch origin main
+            git merge origin/main
+            if [ $? -ne 0 ]; then
+              echo "Merge conflict detected. Resolving by applying remote changes."
+              git checkout --theirs $(git diff --name-only --diff-filter=U)
+              git add .
+              git commit -m "Resolved merge conflicts by applying remote changes."
+            else
+              echo "Merge successful, no conflicts detected."
+            fi
+            
+            ./gradlew clean build
+            docker rm -f server-dev --force
+            docker rmi server-dev
+            docker compose -f docker-compose-dev.yml -p server-dev up --build -d
