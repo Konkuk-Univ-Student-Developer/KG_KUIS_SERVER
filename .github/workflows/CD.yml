@@ -15,7 +15,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
           script: |
-            cd ~/Server/backend
+            cd ~/KG_KUIS_SERVER
             git checkout main
             kill -9 $(lsof -t -i :8080)
             git add .
