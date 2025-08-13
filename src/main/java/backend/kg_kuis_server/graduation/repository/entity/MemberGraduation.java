@@ -15,13 +15,13 @@ public class MemberGraduation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity member;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "graduation_id")
     private GraduationRequirement graduationRequirement;
 
-    private Integer score;
+    private Integer subject;
 }

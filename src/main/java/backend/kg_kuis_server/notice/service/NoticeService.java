@@ -23,6 +23,10 @@ public class NoticeService {
 
     @Transactional(readOnly = true)
     public Page<NoticeResponse> findByCategory(Integer categoryId, Pageable pageable) {
+        if (categoryId == null) {
+            return getNoticeResponses(pageable);
+        }
+
         Page<NoticeEntity> page = noticeRepository.findByCategoryId(categoryId, pageable);
 
         List<Long> ids = page.getContent().stream().map(NoticeEntity::getId).toList();
@@ -32,6 +36,13 @@ public class NoticeService {
         return page.map(e -> NoticeResponse.from(e, favIds.contains(e.getId())));
     }
 
+    private Page<NoticeResponse> getNoticeResponses(Pageable pageable) {
+        Page<NoticeEntity> allByOrderByPubDateDesc = noticeRepository.findAllByOrderByPubDateDesc(pageable);
+        List<Long> ids = allByOrderByPubDateDesc.stream().map(NoticeEntity::getId).toList();
+        return allByOrderByPubDateDesc.map(e -> NoticeResponse.from(e,
+                noticeFavoriteService.favoriteIdsForCurrentUser(ids).contains(e.getId())
+        ));
+    }
 
     public Page<NoticeSimpleResponse> searchNotices(String keyword, Integer categoryId, Pageable pageable) {
         Page<NoticeEntity> page = noticeQueryRepository.searchByTitleAndCategory(keyword, categoryId, pageable);

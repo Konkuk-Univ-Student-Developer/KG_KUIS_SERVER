@@ -25,8 +25,8 @@ public interface MemberScholarshipRepository extends JpaRepository<MemberScholar
     @Query("""
                 select a from MemberScholarShip a
                 where a.member.id = :memberId
-                  and a.scholarship.year = :year
-                  and a.scholarship.semester = :semesterText
+                  and a.scholarship.academicYear = :year
+                  and a.scholarship.semester = :semester
                   and a.scholarship.scholarshipName = :scholarshipName
                 order by a.id desc
             """)

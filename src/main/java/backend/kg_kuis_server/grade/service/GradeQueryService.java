@@ -13,6 +13,8 @@ import backend.kg_kuis_server.member.repository.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +23,19 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GradeQueryService {
+
+    private static final Map<String, Double> GRADE_POINT_MAP = Map.ofEntries(
+            Map.entry("A+", 4.5),
+            Map.entry("A", 4.0),
+            Map.entry("B+", 3.5),
+            Map.entry("B", 3.0),
+            Map.entry("C+", 2.5),
+            Map.entry("C", 2.0),
+            Map.entry("D+", 1.5),
+            Map.entry("D", 1.0),
+            Map.entry("F", 0.0),
+            Map.entry("P", 0.0)
+    );
 
     private final MemberGradeRepository gradeRepository;
     private final MemberRepository memberRepository;
@@ -31,7 +46,33 @@ public class GradeQueryService {
         MemberAcademy byMember = memberAcademicRepository.findByMember(member).orElseThrow(() -> new CustomException(MemberErrorCode.NOT_ACADEMY_INFO_EXIST));
         List<MemberGrade> memberGrades = gradeRepository.findMemberGradeByMemberAndCourse_CourseYearAndCourse_Semester(member, year, semester);
 
-        GradeSummary gradeSummary = GradeSummary.builder().gpa(byMember.getGpa()).gpaScale(byMember.getGpaScale()).earnedCredits(18).registeredCredits(memberGrades.stream().mapToInt(g -> g.getCourse().getCredit()).sum()).probation(byMember.getEarlyGraduation()).honors(byMember.getHonor()).build();
+        int totalCredits = memberGrades.stream()
+                .mapToInt(g -> g.getCourse().getCredit())
+                .sum();
+
+        double semesterGpa = 0.0;
+        int gpaCredits = memberGrades.stream()
+                .filter(g -> !"P".equalsIgnoreCase(g.getLetterGrade())) // P 제외
+                .mapToInt(g -> g.getCourse().getCredit())
+                .sum();
+
+        if (gpaCredits > 0) {
+            semesterGpa = memberGrades.stream()
+                    .filter(g -> !"P".equalsIgnoreCase(g.getLetterGrade()))
+                    .mapToDouble(g -> GRADE_POINT_MAP.getOrDefault(g.getLetterGrade(), 0.0) * g.getCourse().getCredit())
+                    .sum() / gpaCredits;
+        }
+
+        boolean honors = semesterGpa >= 4.0;
+
+        GradeSummary gradeSummary = GradeSummary.builder()
+                .gpa(BigDecimal.valueOf(semesterGpa).setScale(2, RoundingMode.HALF_UP)) // 학기 gpa
+                .gpaScale(byMember.getGpaScale())
+                .earnedCredits(totalCredits) // 들은 학점 총합
+                .registeredCredits(totalCredits) // 등록 학점 총합
+                .probation(byMember.getEarlyGraduation()) // 기존 로직 유지
+                .honors(honors) // 4.0 이상 여부
+                .build();
 
         AtomicInteger counter = new AtomicInteger(1);
 
@@ -40,7 +81,7 @@ public class GradeQueryService {
         return SemesterGradeResponse.builder().year(year).semester(semester).summary(gradeSummary).items(gradeItems).build();
     }
 
-    public AllSemesterGradesResponse getAllSemesters(Long memberId, String order) {
+    public AllSemesterGradesResponse getAllSemesters(Long memberId) {
         List<MemberGrade> rows = gradeRepository.findAllWithCourseByMemberId(memberId);
 
         Map<Key, List<MemberGrade>> grouped = rows.stream().collect(Collectors.groupingBy(mg -> new Key(mg.getCourse().getCourseYear(), mg.getCourse().getSemester())));

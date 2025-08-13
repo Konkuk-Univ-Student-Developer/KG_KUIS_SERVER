@@ -1,10 +1,6 @@
 spring:
   profiles:
-    active: local
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+    active: ${PROFILE}
+    group:
+      local: "local"
+      dev: "dev, datasource"

@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
                 .body(errorMessage);
     }
 
-    @ExceptionHandler
+   @ExceptionHandler
     public ResponseEntity<ErrorMessage> handle(Exception e, HttpServletRequest request, HttpServletResponse response) {
         ErrorMessage errorMessage = new ErrorMessage("서버 관리자에게 문의하세요");
         StringWriter sw = new StringWriter();

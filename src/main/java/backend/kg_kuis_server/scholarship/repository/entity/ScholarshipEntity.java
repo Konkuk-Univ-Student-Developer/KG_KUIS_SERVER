@@ -11,7 +11,7 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "scholarships",
         indexes = {
-                @Index(name = "idx_scholarship_yr_sem", columnList = "year, semester"),
+                @Index(name = "idx_scholarship_yr_sem", columnList = "academicYear, semester"),
                 @Index(name = "idx_scholarship_code", columnList = "scholarship_code"),
                 @Index(name = "idx_apply_period", columnList = "apply_start_date, apply_end_date")
         })
@@ -27,7 +27,7 @@ public class ScholarshipEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Integer year;
+    private Integer academicYear;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
@@ -54,7 +54,9 @@ public class ScholarshipEntity {
     @Column(name = "apply_end_time", nullable = false, length = 4)
     private String applyEndTime;
 
-    @Transient
+    @Lob
+    private String notice;
+
     public LocalDate getApplyStartLocalDate() {
         return LocalDate.of(
                 Integer.parseInt(applyStartDate.substring(0, 4)),
@@ -63,7 +65,6 @@ public class ScholarshipEntity {
         );
     }
 
-    @Transient
     public LocalTime getApplyStartLocalTime() {
         return LocalTime.of(
                 Integer.parseInt(applyStartTime.substring(0, 2)),
@@ -71,12 +72,10 @@ public class ScholarshipEntity {
         );
     }
 
-    @Transient
     public LocalDateTime getApplyStartAt() {
         return LocalDateTime.of(getApplyStartLocalDate(), getApplyStartLocalTime());
     }
 
-    @Transient
     public LocalDate getApplyEndLocalDate() {
         return LocalDate.of(
                 Integer.parseInt(applyEndDate.substring(0, 4)),
@@ -85,7 +84,6 @@ public class ScholarshipEntity {
         );
     }
 
-    @Transient
     public LocalTime getApplyEndLocalTime() {
         return LocalTime.of(
                 Integer.parseInt(applyEndTime.substring(0, 2)),
@@ -93,7 +91,6 @@ public class ScholarshipEntity {
         );
     }
 
-    @Transient
     public LocalDateTime getApplyEndAt() {
         return LocalDateTime.of(getApplyEndLocalDate(), getApplyEndLocalTime());
     }

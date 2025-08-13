@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
-@Tag(name = "Member Dashboard", description = "회원 대시보드 API")
+@Tag(name = "졸업 API", description = "졸업 API")
 public class MemberDashboardController {
 
     private final MemberDashboardService service;
 
     @GetMapping("/{memberId}/dashboard")
     @Operation(
-            summary = "회원 대시보드 조회",
+            summary = "졸업화면 대시보드 조회",
             description = """
                     지정한 회원 ID에 해당하는 대시보드 데이터를 반환합니다.
                     """,

@@ -1,5 +1,6 @@
 package backend.kg_kuis_server.notice.repository.entity;
 
+import backend.kg_kuis_server.global.repository.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-public class NoticeFavoriteEntity {
+public class NoticeFavoriteEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,4 @@ public class NoticeFavoriteEntity {
 
     @Column(nullable = false)
     private Long noticeId;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 }

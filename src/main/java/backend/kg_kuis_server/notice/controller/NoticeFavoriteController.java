@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/notices")
 @RequiredArgsConstructor
-@Tag(name = "Notice Favorites", description = "공지 즐겨찾기(북마크) API - 고정 사용자 기준")
+@Tag(name = "공지사항 API", description = "공지사항 API")
 public class NoticeFavoriteController {
 
     private final NoticeFavoriteService favoriteService;
@@ -35,7 +35,7 @@ public class NoticeFavoriteController {
             }
     )
     public ResponseEntity<Void> bookmark(
-            @Parameter(description = "공지 ID", example = "1154366")
+            @Parameter(description = "공지 ID", example = "10")
             @PathVariable(name = "noticeId") Long noticeId
     ) {
         favoriteService.mark(noticeId);
@@ -48,7 +48,7 @@ public class NoticeFavoriteController {
             description = "고정된 1번 사용자의 즐겨찾기에서 공지를 제거합니다.",
             responses = {
                     @ApiResponse(responseCode = "204", description = "해제 성공"),
-                    @ApiResponse(responseCode = "404", description = "북마크 내역 없음")
+                    @ApiResponse(responseCode = "409", description = "북마크 내역 중복")
             }
     )
     public ResponseEntity<Void> unbookmark(

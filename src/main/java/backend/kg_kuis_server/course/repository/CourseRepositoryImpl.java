@@ -1,7 +1,9 @@
 package backend.kg_kuis_server.course.repository;
 
+import backend.kg_kuis_server.course.domain.CourseCategory;
 import backend.kg_kuis_server.course.repository.entity.CourseEntity;
 import backend.kg_kuis_server.course.repository.entity.QCourseEntity;
+import backend.kg_kuis_server.member.domain.Semester;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,22 +21,24 @@ public class CourseRepositoryImpl {
     private final JPAQueryFactory query;
 
     public Page<CourseEntity> search(Integer year,
-                                     String semester,
-                                     String category,
+                                     Semester semester,
+                                     CourseCategory category,
                                      String professor,
-                                     String courseCode,
+                                     String courseNumber,
                                      String departmentName,
+                                     String courseName,
                                      Pageable pageable) {
         QCourseEntity c = QCourseEntity.courseEntity;
         BooleanBuilder where = new BooleanBuilder();
 
-        if (year != null) where.and(c.year.eq(year));
-        if (semester != null && !semester.isBlank()) where.and(c.semester.eq(semester));
-        if (category != null && !category.isBlank()) where.and(c.category.eq(category));
+        if (year != null) where.and(c.courseYear.eq(year));
+        if (semester != null) where.and(c.semester.eq(semester));
+        if (category != null) where.and(c.courseCategory.eq(category));
         if (professor != null && !professor.isBlank()) where.and(c.professor.containsIgnoreCase(professor));
-        if (courseCode != null && !courseCode.isBlank()) where.and(c.courseCode.eq(courseCode));
+        if (courseNumber != null && !courseNumber.isBlank()) where.and(c.courseNumber.eq(courseNumber));
         if (departmentName != null && !departmentName.isBlank())
             where.and(c.departmentName.containsIgnoreCase(departmentName));
+        if(courseName != null && !courseName.isBlank()) where.and(c.courseName.containsIgnoreCase(courseName));
 
         // 목록 조회
         List<CourseEntity> content = query

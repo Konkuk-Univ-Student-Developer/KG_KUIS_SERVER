@@ -14,21 +14,21 @@ public interface MemberGradeRepository extends JpaRepository<MemberGrade, Long> 
 
     // 카테고리별 취득 학점 합계 (F/NP 제외)
     @Query("""
-              select mc.course.category, coalesce(sum(mc.course.credit),0)
+              select mc.course.courseCategory, coalesce(sum(mc.course.credit),0)
               from MemberGrade mc
               where mc.member.id = :memberId
                 and (mc.letterGrade is null or mc.letterGrade not in ('F','NP'))
-              group by mc.course.category
+              group by mc.course.courseCategory
             """)
     List<Object[]> sumEarnedCreditsGroupByCategory(@Param("memberId") Long memberId);
 
     // 카테고리별 수강 신청 학점 합계
     @Query("""
-              select mc.course.category, coalesce(sum(mc.course.credit),0)
+              select mc.course.courseCategory, coalesce(sum(mc.course.credit),0)
               from MemberGrade mc
               where mc.member.id = :memberId
                 and mc.letterGrade is null
-              group by mc.course.category
+              group by mc.course.courseCategory
             """)
     List<Object[]> sumRegisteredCreditsGroupByCategory(@Param("memberId") Long memberId);
 
@@ -37,7 +37,7 @@ public interface MemberGradeRepository extends JpaRepository<MemberGrade, Long> 
               select mc
               from MemberGrade mc
               where mc.member.id = :memberId
-                and mc.course.category = :category
+                and mc.course.courseCategory = :category
               order by mc.course.courseYear asc, mc.course.semester asc, mc.course.courseNumber asc
             """)
     List<MemberGrade> findAllByMemberAndCategory(

@@ -13,7 +13,7 @@ public record MyApplicationItemResponse(
 ) {
     public static MyApplicationItemResponse from(MemberScholarShip a) {
         return new MyApplicationItemResponse(
-                a.getScholarship().getYear(),
+                a.getScholarship().getAcademicYear(),
                 a.getScholarship().getSemester(),
                 a.getScholarship().getScholarshipName(),
                 a.getApplicationDate().toString().replace('-', '.'),

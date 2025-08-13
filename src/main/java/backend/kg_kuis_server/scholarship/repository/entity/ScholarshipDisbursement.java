@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Table(name = "scholarship_disbursements",
         indexes = {
                 @Index(name = "idx_disb_student", columnList = "member_id"),
-                @Index(name = "idx_disb_year_sem", columnList = "year, semester"),
+                @Index(name = "idx_disb_year_sem", columnList = "academicYear, semester"),
                 @Index(name = "idx_disb_paydate", columnList = "payment_date")
         })
 @Getter
@@ -30,8 +30,8 @@ public class ScholarshipDisbursement {
     @JoinColumn(name = "member_id")
     private MemberEntity member;
 
-    @Column(name = "year", nullable = false)
-    private Integer year;
+    @Column(name = "academic_year", nullable = false)
+    private Integer academicYear;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "semester", nullable = false, length = 10)
@@ -58,7 +58,7 @@ public class ScholarshipDisbursement {
     ) {
         return ScholarshipDisbursement.builder()
                 .member(member)
-                .year(year)
+                .academicYear(year)
                 .semester(semester)
                 .scholarshipName(name)
                 .admissionAmount(admission == null ? null : new BigDecimal(admission))

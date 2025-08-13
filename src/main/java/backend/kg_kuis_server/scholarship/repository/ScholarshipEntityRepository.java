@@ -11,7 +11,7 @@ public interface ScholarshipEntityRepository extends JpaRepository<ScholarshipEn
 
     @Query("""
         select s from ScholarshipEntity s
-        where s.year = :year and s.semester = :semester
+        where s.academicYear = :year and s.semester = :semester
         order by s.applyStartDate asc, s.applyStartTime asc
     """)
     List<ScholarshipEntity> findAllForSemester(Integer year, Semester semester);

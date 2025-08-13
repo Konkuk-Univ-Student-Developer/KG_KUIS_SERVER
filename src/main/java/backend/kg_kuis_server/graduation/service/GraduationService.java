@@ -49,11 +49,11 @@ public class GraduationService {
 
         return GraduationCheckRow
                 .builder()
-                .critierion(graduationRequirement.getCriterionValue() + "학점")
+                .critierion(graduationRequirement.getCriterionValue() + "과목")
                 .title(graduationRequirement.getTitle())
-                .acquired(memberGraduation.getScore() + "학점")
-                .lack(graduationRequirement.getCriterionValue() - memberGraduation.getScore() + "학점")
-                .result(graduationRequirement.getCriterionValue() - memberGraduation.getScore() <= 0 ? "합격" : "불합")
+                .acquired(memberGraduation.getSubject() + "과목")
+                .lack(graduationRequirement.getCriterionValue() - memberGraduation.getSubject() + "학점")
+                .result(graduationRequirement.getCriterionValue() - memberGraduation.getSubject() <= 0 ? "합격" : "불합")
                 .detail(graduationRequirement.getDescription())
                 .build();
     }

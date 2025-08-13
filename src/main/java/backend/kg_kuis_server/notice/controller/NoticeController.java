@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices")
-@Tag(name = "Notices", description = "공지사항 API")
+@Tag(name = "공지사항 API", description = "공지사항 API")
 public class NoticeController {
 
     private final NoticeService noticeService;
@@ -46,8 +46,14 @@ public class NoticeController {
     )
     @PageableAsQueryParam
     public Page<NoticeResponse> getNoticesByCategory(
-            @Parameter(description = "카테고리 ID", example = "2")
-            @RequestParam("category") Integer categoryId,
+            @Parameter(description = "234: 학사," +
+                    " 235: 장학," +
+                    " 237: 국제," +
+                    " 238: 학생," +
+                    " 4083: 취창업," +
+                    " 240: 일반," +
+                    " 4214: 산학", example = "234")
+            @RequestParam(value = "category", required = false) Integer categoryId,
 
             @ParameterObject Pageable pageable
     ) {
@@ -58,9 +64,9 @@ public class NoticeController {
     @Operation(
             summary = "공지사항 검색",
             description = """
-            키워드와 선택적 카테고리 ID로 공지사항을 검색합니다.
-            결과는 pubDate 기준 내림차순으로 정렬됩니다.
-            """,
+                    키워드와 선택적 카테고리 ID로 공지사항을 검색합니다.
+                    결과는 pubDate 기준 내림차순으로 정렬됩니다.
+                    """,
             responses = {
                     @ApiResponse(
                             responseCode = "200",

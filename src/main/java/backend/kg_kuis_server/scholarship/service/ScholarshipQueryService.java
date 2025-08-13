@@ -8,6 +8,7 @@ import backend.kg_kuis_server.scholarship.repository.entity.ScholarshipDisbursem
 import backend.kg_kuis_server.scholarship.repository.entity.ScholarshipEntity;
 import backend.kg_kuis_server.scholarship.service.dto.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,12 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ScholarshipQueryService {
 
     private final ScholarshipEntityRepository scholarshipRepository;
     private final MemberScholarshipRepository applicationRepository;
     private final ScholarshipDisbursementRepository scholarshipDisbursementRepository;
-
 
     public AvailableListResponse getAvailable(Integer year, Semester semester, Long memberId) {
         List<ScholarshipEntity> postings = scholarshipRepository.findAllForSemester(year, semester);
@@ -35,13 +36,12 @@ public class ScholarshipQueryService {
                             memberId, year, semester, s.getScholarshipName());
                     String myStatus = apps.isEmpty() ? "미신청" : "신청";
 
-                    String noticeUrl = null;
-                    boolean hasAttachment = false;
+                    String noticeUrl = s.getNotice();
+                    boolean hasAttachment = true;
 
                     return AvailableScholarshipResponse.of(s, myStatus, noticeUrl, hasAttachment);
                 })
                 .toList();
-
         return new AvailableListResponse(year, semester, items);
     }
 
@@ -64,7 +64,7 @@ public class ScholarshipQueryService {
         List<ScholarshipDisbursement> rows = scholarshipDisbursementRepository.findAllByStudent(memberId);
 
         Map<Integer, List<ScholarshipDisbursement>> grouped =
-                rows.stream().collect(Collectors.groupingBy(ScholarshipDisbursement::getYear));
+                rows.stream().collect(Collectors.groupingBy(ScholarshipDisbursement::getAcademicYear));
 
         Comparator<Map.Entry<Integer, List<ScholarshipDisbursement>>> yearCmp =
                 Map.Entry.<Integer, List<ScholarshipDisbursement>>comparingByKey().reversed();

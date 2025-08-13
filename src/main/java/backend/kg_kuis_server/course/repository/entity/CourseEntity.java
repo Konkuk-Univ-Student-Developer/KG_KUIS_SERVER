@@ -19,7 +19,7 @@ public class CourseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "course_year")
     private Integer courseYear;
 
     @Column(nullable = false)
@@ -30,9 +30,10 @@ public class CourseEntity {
     private Integer grade;
 
     @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private CourseCategory courseCategory;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "course_code")
     private String courseCode;
 
     @Column(nullable = false)
@@ -50,14 +51,11 @@ public class CourseEntity {
     @Column(nullable = false)
     private String professor;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "course_number")
     private String courseNumber;
 
     @Column(nullable = false)
     private String lectureType;
-
-    @Column(nullable = false)
-    private CourseCategory courseCategory;
 
     private String method;
 }

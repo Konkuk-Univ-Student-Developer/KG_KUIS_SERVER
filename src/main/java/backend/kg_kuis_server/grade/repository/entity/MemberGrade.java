@@ -16,11 +16,11 @@ public class MemberGrade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity member;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY) // 과목(복합 FK)
     @JoinColumn(name = "course_id")
     private CourseEntity course;
 

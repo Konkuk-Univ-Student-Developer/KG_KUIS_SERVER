@@ -147,14 +147,19 @@ public class GraduationDashboardService {
             case 반교 -> "반교";
             case 지교 -> "지교";
             case 지필 -> "지필";
-            case 전필전선 -> "전필+전선";
+            case 전필전선 -> "전필전선";
             case 전기 -> "전기";
             case 전필 -> "전필";
-            case 전선 -> "전선";
             case 일선 -> "일선";
             case 기타 -> "기타";
             case 교필 -> "교필";
             case 교선 -> "교선";
+            case 다전공 -> "다전공";
+            case 부전공 -> "부전공";
+            case 교직 -> "교직";
+            case 전공 -> "전공";
+            case 교양 -> "교양";
+            case 연계전공 -> "연계전공";
         };
     }
 
@@ -168,7 +173,7 @@ public class GraduationDashboardService {
             case "반교" -> CourseCategory.반교;
             case "지교" -> CourseCategory.지교;
             case "지필" -> CourseCategory.지필;
-            case "전필+전선" -> CourseCategory.전필전선;
+            case "전필전선" -> CourseCategory.전필전선;
             case "전기" -> CourseCategory.전기;
             case "일선" -> CourseCategory.일선;
             case "기타" -> CourseCategory.기타;

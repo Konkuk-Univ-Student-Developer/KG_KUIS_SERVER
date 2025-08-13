@@ -12,7 +12,7 @@ public interface ScholarshipDisbursementRepository
     @Query("""
         select d from ScholarshipDisbursement d
         where d.member.id = :memberId
-        order by d.year asc, d.semester asc, d.paymentDate asc, d.id asc
+        order by d.academicYear asc, d.semester asc, d.paymentDate asc, d.id asc
     """)
     List<ScholarshipDisbursement> findAllByStudent(Long memberId);
 }

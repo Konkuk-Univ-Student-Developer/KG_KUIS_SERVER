@@ -4,8 +4,7 @@ import backend.kg_kuis_server.course.repository.entity.CourseEntity;
 
 public record CourseOfferingResponse(
         Long id,
-        Integer grade,
-        String courseCode,
+        String courseNumber,
         String courseName,
         Integer credit,
         String professor,
@@ -14,8 +13,7 @@ public record CourseOfferingResponse(
     public static CourseOfferingResponse from(CourseEntity e) {
         return new CourseOfferingResponse(
                 e.getId(),
-                e.getGrade(),
-                e.getCourseCode(),
+                e.getCourseNumber(),
                 e.getCourseName(),
                 e.getCredit(),
                 e.getProfessor(),
