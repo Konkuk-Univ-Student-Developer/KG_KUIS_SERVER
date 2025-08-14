@@ -68,7 +68,7 @@ public class CourseController {
             @Parameter(
                     description = "이수구분",
                     example = "전필",
-                    schema = @Schema(allowableValues = {"교선", "교필", "반교", "일선", "전필전선"})
+                    schema = @Schema(allowableValues = {"기교", "심교", "지교", "지필", "교선", "교필", "반교", "일선", "전필전선"})
             )
             @RequestParam(required = false) CourseCategory category,
 
@@ -140,7 +140,7 @@ public class CourseController {
             @Parameter(
                     description = "이수구분",
                     example = "전필",
-                    schema = @Schema(allowableValues = {"교선", "교필", "반교", "일선", "전선", "전필"})
+                    schema = @Schema(allowableValues = {"기교", "심교", "지교", "지필", "교선", "교필", "반교", "일선", "전필전선"})
             )
             @RequestParam(required = false) CourseCategory category,
 
