@@ -1,6 +1,5 @@
 package backend.kg_kuis_server.notice.controller;
 
-import backend.kg_kuis_server.notice.repository.entity.NoticeEntity;
 import backend.kg_kuis_server.notice.service.NoticeService;
 import backend.kg_kuis_server.notice.service.dto.NoticeResponse;
 import backend.kg_kuis_server.notice.service.dto.NoticeSimpleResponse;
@@ -23,6 +22,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import backend.kg_kuis_server.notice.dto.PageResponse;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -44,8 +45,7 @@ public class NoticeController {
                     )
             }
     )
-    @PageableAsQueryParam
-    public Page<NoticeResponse> getNoticesByCategory(
+    public PageResponse<NoticeResponse> getNoticesByCategory(
             @Parameter(description = "234: 학사," +
                     " 235: 장학," +
                     " 237: 국제," +

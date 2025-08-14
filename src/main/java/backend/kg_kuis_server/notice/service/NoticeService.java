@@ -1,5 +1,6 @@
 package backend.kg_kuis_server.notice.service;
 
+import backend.kg_kuis_server.notice.dto.PageResponse;
 import backend.kg_kuis_server.notice.repository.impl.NoticeQueryRepositoryImpl;
 import backend.kg_kuis_server.notice.repository.NoticeRepository;
 import backend.kg_kuis_server.notice.repository.entity.NoticeEntity;
@@ -31,32 +32,33 @@ public class NoticeService {
             value = "noticeByCategory",
             key = "#categoryId != null ? #categoryId + ':' + #pageable.pageNumber : 'all:' + #pageable.pageNumber"
     )
-    public Page<NoticeResponse> findByCategory(Integer categoryId, Pageable pageable) {
+    public PageResponse<NoticeResponse> findByCategory(Integer categoryId, Pageable pageable) {
+        Page<NoticeEntity> page;
+
         if (categoryId == null) {
-            return getNoticeResponses(pageable);
+            page = noticeRepository.findAllByOrderByPubDateDesc(pageable);
+        } else {
+            page = noticeRepository.findByCategoryId(categoryId, pageable);
         }
 
-        Page<NoticeEntity> page = noticeRepository.findByCategoryId(categoryId, pageable);
-        return mapWithFavorites(page);
-    }
-
-    @Transactional(readOnly = true)
-    protected Page<NoticeResponse> getNoticeResponses(Pageable pageable) {
-        Page<NoticeEntity> page = noticeRepository.findAllByOrderByPubDateDesc(pageable);
-        return mapWithFavorites(page);
+        return mapWithFavoritesToPageResponse(page);
     }
 
     /**
-     * 공지사항 Page → 즐겨찾기 여부 포함 Page<NoticeResponse> 변환
+     * Page<NoticeEntity> → PageResponse<NoticeResponse> 변환
      */
-    private Page<NoticeResponse> mapWithFavorites(Page<NoticeEntity> page) {
+    private PageResponse<NoticeResponse> mapWithFavoritesToPageResponse(Page<NoticeEntity> page) {
         List<Long> ids = page.getContent().stream()
                 .map(NoticeEntity::getId)
                 .toList();
 
         var favIds = noticeFavoriteService.favoriteIdsForCurrentUser(ids);
 
-        return page.map(e -> NoticeResponse.from(e, favIds.contains(e.getId())));
+        List<NoticeResponse> content = page.getContent().stream()
+                .map(e -> NoticeResponse.from(e, favIds.contains(e.getId())))
+                .toList();
+
+        return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements());
     }
 
     /**
