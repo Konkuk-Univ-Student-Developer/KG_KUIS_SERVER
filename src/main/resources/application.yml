@@ -2,5 +2,5 @@ spring:
   profiles:
     active: ${PROFILE}
     group:
-      local: "local"
-      dev: "dev, datasource"
+      local: "local, redis"
+      dev: "dev, datasource, redis"

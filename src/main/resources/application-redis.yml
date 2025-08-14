@@ -1,0 +1,7 @@
+spring:
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${HOST}    # Redis 서버 주소
+      port: ${REDIS_PORT}
