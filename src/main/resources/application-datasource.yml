@@ -2,20 +2,23 @@ spring:
   config:
     activate:
       on-profile: "datasource"
+
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
   jpa:
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_batch_fetch_size: 1000
-      defer-datasource-initialization: true
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
+
   sql:
     init:
       mode: always
