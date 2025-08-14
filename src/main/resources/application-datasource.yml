@@ -1,4 +1,8 @@
 spring:
+  sql:
+    init:
+      mode: always
+
   config:
     activate:
       on-profile: "datasource"
@@ -15,12 +19,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default_batch_fetch_size: 1000
+
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
-  sql:
-    init:
-      mode: always
+
 
 
