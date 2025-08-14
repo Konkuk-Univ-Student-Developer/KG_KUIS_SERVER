@@ -54,7 +54,7 @@ public class ScholarshipEntity {
     @Column(name = "apply_end_time", nullable = false, length = 4)
     private String applyEndTime;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String notice;
 
     public LocalDate getApplyStartLocalDate() {

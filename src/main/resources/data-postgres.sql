@@ -30,7 +30,7 @@ VALUES ('2학기 등록금 고지서 출력(16:00 예정)', DATE '2025-08-07', D
        ('수강신청', DATE '2025-08-29', DATE '2025-08-29');
 
 
-INSERT INTO notices
+/*INSERT INTO notices
 (category_id, category_name, title, link, pub_date, author, description)
 VALUES (234, '학사', '2025-2학기 수강신청 안내', 'https://univ.example/notices/234-20250813-1', '2025-08-13 10:00:00.000', '학사과',
         '수강신청 일정 및 유의사항을 안내합니다.'),
@@ -73,7 +73,7 @@ VALUES (234, '학사', '2025-2학기 수강신청 안내', 'https://univ.example
        (4214, '산학', '캡스톤디자인 과제 모집', 'https://univ.example/notices/4214-20250801-1', '2025-08-01 10:05:00.000', '산학협력단',
         '산학 공동 캡스톤 과제 참여팀 모집.'),
        (4214, '산학', '기업 연계 인턴십 안내', 'https://univ.example/notices/4214-20250731-1', '2025-07-31 09:55:00.000', '산학협력단',
-        '연계 기업, 지원자격, 선발일정 안내.');
+        '연계 기업, 지원자격, 선발일정 안내.');*/
 
 INSERT INTO course_entity (course_year, semester, grade, course_category, course_code, course_name, credit,
                            department_name,
