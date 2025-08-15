@@ -20,6 +20,7 @@ public class NoticeEntity {
 
     private String title;
 
+    @Column(unique = true)
     private String link;
 
     private String pubDate;

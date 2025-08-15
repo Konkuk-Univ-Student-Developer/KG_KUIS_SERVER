@@ -6,7 +6,7 @@ import lombok.Builder;
 public record
 GraduationCheckRow(
         String title,
-        String critierion,
+        String criterion,
         String acquired,
         String lack,
         String detail,
