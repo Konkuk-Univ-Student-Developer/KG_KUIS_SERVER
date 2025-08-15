@@ -49,7 +49,7 @@ public class GraduationService {
 
         return GraduationCheckRow
                 .builder()
-                .critierion(graduationRequirement.getCriterionValue() + "과목")
+                .criterion(graduationRequirement.getCriterionValue() + "과목")
                 .title(graduationRequirement.getTitle())
                 .acquired(memberGraduation.getSubject() + "과목")
                 .lack(graduationRequirement.getCriterionValue() - memberGraduation.getSubject() + "학점")
