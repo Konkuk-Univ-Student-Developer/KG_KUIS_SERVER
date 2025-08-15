@@ -39,6 +39,7 @@ public class OverallSummaryService {
             Map.entry(CourseCategory.전필, CourseCategory.전공),
             Map.entry(CourseCategory.전필전선, CourseCategory.전공),
             Map.entry(CourseCategory.전기, CourseCategory.전공),
+            Map.entry(CourseCategory.전선, CourseCategory.전공),
 
             Map.entry(CourseCategory.교필, CourseCategory.교양),
             Map.entry(CourseCategory.교선, CourseCategory.교양),
