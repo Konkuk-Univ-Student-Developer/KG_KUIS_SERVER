@@ -1,6 +1,7 @@
 package backend.kg_kuis_server.course.repository.entity;
 
 import backend.kg_kuis_server.course.domain.CourseCategory;
+import backend.kg_kuis_server.course.domain.SubjectClassification;
 import backend.kg_kuis_server.member.domain.Semester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -58,4 +59,8 @@ public class CourseEntity {
     private String lectureType;
 
     private String method;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private SubjectClassification classification;
 }

@@ -116,9 +116,9 @@ public class GraduationDashboardService {
                         mc.getCourse().getCourseYear(),
                         mc.getCourse().getSemester(),
                         mc.getCourse().getGrade(),
-                        mc.getCourse().getCourseCode(),
+                        mc.getCourse().getCourseNumber(),
                         mc.getCourse().getCourseName(),
-                        null,   // 세부 분류
+                        mc.getCourse().getClassification(),   // 세부 분류
                         mc.getCourse().getCredit(),
                         mc.getLetterGrade()
                 ))
