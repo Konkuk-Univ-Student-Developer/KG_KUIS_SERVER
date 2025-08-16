@@ -1,11 +1,9 @@
 package backend.kg_kuis_server.notice.service;
 
-import backend.kg_kuis_server.notice.dto.PageResponse;
-import backend.kg_kuis_server.notice.repository.impl.NoticeQueryRepositoryImpl;
 import backend.kg_kuis_server.notice.repository.NoticeRepository;
 import backend.kg_kuis_server.notice.repository.entity.NoticeEntity;
+import backend.kg_kuis_server.notice.repository.impl.NoticeQueryRepositoryImpl;
 import backend.kg_kuis_server.notice.service.dto.NoticeResponse;
-import backend.kg_kuis_server.notice.service.dto.NoticeSimpleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -25,56 +24,50 @@ public class NoticeService {
     private final NoticeFavoriteService noticeFavoriteService;
 
     /**
-     * 카테고리별 공지사항 조회 (즐겨찾기 여부 포함, Redis 캐싱)
+     * 공지사항 조회 (카테고리 + 키워드 + 북마크 상단 고정)
      */
     @Transactional(readOnly = true)
     @Cacheable(
-            value = "noticeByCategory",
-            key = "#categoryId != null ? #categoryId + ':' + #pageable.pageNumber : 'all:' + #pageable.pageNumber"
+            value = "notices",
+            key = "#categoryId + ':' + (#keyword != null ? #keyword : 'all') + ':' + #pageable.pageNumber"
     )
-    public PageResponse<NoticeResponse> findByCategory(Integer categoryId, Pageable pageable) {
+    public backend.kg_kuis_server.notice.dto.PageResponse<NoticeResponse> getNotices(Integer categoryId, String keyword, Pageable pageable) {
         Page<NoticeEntity> page;
 
-        if (categoryId == null) {
-            page = noticeRepository.findAllByOrderByPubDateDesc(pageable);
-        } else {
+        // 조건 분기
+        if (keyword != null && !keyword.isBlank()) {
+            page = noticeQueryRepository.searchByTitleAndCategory(keyword, categoryId, pageable);
+        } else if (categoryId != null) {
             page = noticeRepository.findByCategoryId(categoryId, pageable);
+        } else {
+            page = noticeRepository.findAllByOrderByPubDateDesc(pageable);
         }
 
-        return mapWithFavoritesToPageResponse(page);
-    }
-
-    /**
-     * Page<NoticeEntity> → PageResponse<NoticeResponse> 변환
-     */
-    private PageResponse<NoticeResponse> mapWithFavoritesToPageResponse(Page<NoticeEntity> page) {
+        // 현재 페이지 Notice ID들 추출
         List<Long> ids = page.getContent().stream()
                 .map(NoticeEntity::getId)
                 .toList();
 
+        // 즐겨찾기된 ID 조회
         var favIds = noticeFavoriteService.favoriteIdsForCurrentUser(ids);
 
+        // NoticeEntity → NoticeResponse 변환 + 북마크 정렬
         List<NoticeResponse> content = page.getContent().stream()
                 .map(e -> NoticeResponse.from(e, favIds.contains(e.getId())))
+                .sorted(
+                        Comparator
+                                .comparing(NoticeResponse::isBookMarked).reversed() // 북마크 true 먼저
+                                .thenComparing(NoticeResponse::pubDate, Comparator.reverseOrder()) // pubDate 최신순
+                )
                 .toList();
 
-        return new PageResponse<>(content, page.getNumber(), page.getSize(), page.getTotalElements());
+        return new backend.kg_kuis_server.notice.dto.PageResponse<NoticeResponse>(content, page.getNumber(), page.getSize(), page.getTotalElements());
     }
 
     /**
      * 공지사항 등록/수정/삭제 시 캐시 전체 삭제
      */
-    @CacheEvict(value = "noticeByCategory", allEntries = true)
+    @CacheEvict(value = "notices", allEntries = true)
     public void clearNoticeCache() {
-    }
-
-    public Page<NoticeSimpleResponse> searchNotices(String keyword, Integer categoryId, Pageable pageable) {
-        Page<NoticeEntity> page = noticeQueryRepository.searchByTitleAndCategory(keyword, categoryId, pageable);
-
-        List<Long> ids = page.getContent().stream().map(NoticeEntity::getId).toList();
-
-        var favIds = noticeFavoriteService.favoriteIdsForCurrentUser(ids);
-
-        return page.map(e -> NoticeSimpleResponse.from(e, favIds.contains(e.getId())));
     }
 }
