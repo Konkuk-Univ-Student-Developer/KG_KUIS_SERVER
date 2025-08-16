@@ -40,7 +40,7 @@ public class NoticeService {
         } else if (categoryId != null) {
             page = noticeRepository.findByCategoryId(categoryId, pageable);
         } else {
-            page = noticeRepository.findAllByOrderByPubDateDesc(pageable);
+            page = noticeRepository.findAll(pageable);
         }
 
         // 현재 페이지 Notice ID들 추출
