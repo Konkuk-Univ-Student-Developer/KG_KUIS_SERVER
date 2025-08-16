@@ -3,6 +3,17 @@ spring:
     openai:
       api-key: ${OPENAI_API_KEY}
 
+      chat:
+        options:
+          model: gpt-4o
+
+      embedding:
+        options:
+          model: text-embedding-3-small
+
     vectorstore:
       pgvector:
-        table-name: notice_embeddings
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
