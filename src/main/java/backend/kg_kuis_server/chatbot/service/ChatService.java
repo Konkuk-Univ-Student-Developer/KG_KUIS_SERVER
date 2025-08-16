@@ -80,7 +80,7 @@ public class ChatService {
                         "공지사항"과 "학사일정" 데이터를 참고해서 질문에 답해.
                         반드시 제목/본문/날짜를 참고해서 한국어로 대답해야 해.
                         근거가 부족하면 "관련 데이터를 찾을 수 없습니다." 라고 답해.
-                        답변 끝에는 참고한 데이터 제목을 bullet로 정리해.
+                        답변 끝에는 참고한 데이터 제목과 url을 bullet로 정리해.
                         """.formatted(nowKst))
                 .user(user -> user
                         .text("[질문]\n{q}\n\n[관련 데이터]\n{ctx}")
