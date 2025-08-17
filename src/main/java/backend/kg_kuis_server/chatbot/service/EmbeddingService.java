@@ -1,8 +1,10 @@
 package backend.kg_kuis_server.chatbot.service;
 
+import backend.kg_kuis_server.chatbot.domain.ScholarshipMapper;
 import backend.kg_kuis_server.notice.repository.NoticeRepository;
 import backend.kg_kuis_server.schedule.repository.ScheduleRepository;
 import backend.kg_kuis_server.schedule.repository.entity.ScheduleEntity;
+import backend.kg_kuis_server.scholarship.repository.ScholarshipEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -20,6 +22,7 @@ public class EmbeddingService {
 
     private final NoticeRepository noticeRepository;
     private final ScheduleRepository scheduleRepository;
+    private final ScholarshipEntityRepository scholarshipRepository;
     private final VectorStore vectorStore;
 
     private static final int BATCH_SIZE = 100;
@@ -30,7 +33,8 @@ public class EmbeddingService {
     @Transactional
     public void reindexAll() {
         //reindexNotices();
-        reindexSchedules();
+        //reindexSchedules();
+        reindexScholarships();
     }
 
     private void reindexNotices() {
@@ -108,6 +112,21 @@ public class EmbeddingService {
                         "endDate", s.getEndDate().toString()
                 )
         );
+    }
+
+    private void reindexScholarships() {
+        var scholarships = scholarshipRepository.findAll();
+
+        for (int i = 0; i < scholarships.size(); i += BATCH_SIZE) {
+            int end = Math.min(i + BATCH_SIZE, scholarships.size());
+            var batch = scholarships.subList(i, end);
+
+            List<Document> docs = batch.stream()
+                    .map(ScholarshipMapper::toDocument)
+                    .toList();
+
+            vectorStore.add(docs);
+        }
     }
 
     private static String stableId(String prefix, Long id) {
