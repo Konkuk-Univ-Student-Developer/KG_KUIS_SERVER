@@ -15,7 +15,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000", "http://localhost:8080", "https://kuis.shop", "https://www.kuis.shop", "http://localhost:5173")
+                        .allowedOrigins("http://localhost:3000", "http://localhost:8080", "https://kuis.shop", "https://www.kuis.shop", "http://localhost:5173", "https://ng-kuis-web.vercel.app", "https://www.ng-kuis-web.vercel.app",
+                                "https://ng-kuis-web-dev.vercel.app", "https://www.ng-kuis-web-dev.vercel.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
