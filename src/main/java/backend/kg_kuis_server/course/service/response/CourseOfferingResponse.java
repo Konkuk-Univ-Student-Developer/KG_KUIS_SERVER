@@ -1,6 +1,8 @@
 package backend.kg_kuis_server.course.service.response;
 
+import backend.kg_kuis_server.course.domain.CourseCategory;
 import backend.kg_kuis_server.course.repository.entity.CourseEntity;
+import backend.kg_kuis_server.member.domain.Semester;
 
 public record CourseOfferingResponse(
         Long id,
@@ -8,7 +10,13 @@ public record CourseOfferingResponse(
         String courseName,
         Integer credit,
         String professor,
-        String schedule
+        String schedule,
+        Integer grade,
+        CourseCategory courseCategory,
+        String departmentName,
+        String lectureType,
+        String method,
+        Semester semester
 ) {
     public static CourseOfferingResponse from(CourseEntity e) {
         return new CourseOfferingResponse(
@@ -17,7 +25,13 @@ public record CourseOfferingResponse(
                 e.getCourseName(),
                 e.getCredit(),
                 e.getProfessor(),
-                e.getSchedule()
+                e.getSchedule(),
+                e.getGrade(),
+                e.getCourseCategory(),
+                e.getDepartmentName(),
+                e.getLectureType(),
+                e.getMethod(),
+                e.getSemester()
         );
     }
 }
