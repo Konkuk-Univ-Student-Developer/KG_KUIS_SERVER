@@ -1,6 +1,8 @@
 package backend.kg_kuis_server.chatbot.service;
 
 import backend.kg_kuis_server.chatbot.domain.ScholarshipMapper;
+import backend.kg_kuis_server.chatbot.repository.PortalMenuRepository;
+import backend.kg_kuis_server.chatbot.repository.entity.PortalMenu;
 import backend.kg_kuis_server.graduation.repository.GraduationRequirementRepository;
 import backend.kg_kuis_server.graduation.repository.entity.GraduationRequirement;
 import backend.kg_kuis_server.notice.repository.NoticeRepository;
@@ -26,6 +28,7 @@ public class EmbeddingService {
     private final ScheduleRepository scheduleRepository;
     private final ScholarshipEntityRepository scholarshipRepository;
     private final GraduationRequirementRepository graduationRequirementRepository;
+    private final PortalMenuRepository portalMenuRepository;
     private final VectorStore vectorStore;
 
     private static final int BATCH_SIZE = 100;
@@ -37,8 +40,9 @@ public class EmbeddingService {
     public void reindexAll() {
         //reindexNotices();
         //reindexSchedules();
-        reindexScholarships();
-        reindexGraduationRequirements();
+        //reindexScholarships();
+        //reindexGraduationRequirements();
+        reindexPortalMenus();
     }
 
     private void reindexNotices() {
@@ -175,6 +179,49 @@ public class EmbeddingService {
                         "title", nullToEmpty(r.getTitle()),
                         "criterionValue", r.getCriterionValue(),
                         "description", nullToEmpty(r.getDescription())
+                )
+        );
+    }
+
+    private void reindexPortalMenus() {
+        var menus = portalMenuRepository.findAll();
+
+        for (int i = 0; i < menus.size(); i += BATCH_SIZE) {
+            int end = Math.min(i + BATCH_SIZE, menus.size());
+            var batch = menus.subList(i, end);
+
+            List<Document> docs = batch.stream()
+                    .map(this::toPortalMenuDocument)
+                    .toList();
+
+            vectorStore.add(docs);
+        }
+    }
+
+    private Document toPortalMenuDocument(PortalMenu menu) {
+        String stableId = stableId("portalMenu", menu.getId());
+        String content = """
+            [카테고리] %s
+            [메뉴명] %s
+            [경로] %s
+            [설명] %s
+            """.formatted(
+                nullToEmpty(menu.getCategory()),
+                nullToEmpty(menu.getTitle()),
+                nullToEmpty(menu.getPath()),
+                nullToEmpty(menu.getDescription())
+        );
+
+        return new Document(
+                stableId,
+                content,
+                Map.of(
+                        "type", "portalMenu",
+                        "portalMenuId", menu.getId(),
+                        "category", nullToEmpty(menu.getCategory()),
+                        "title", nullToEmpty(menu.getTitle()),
+                        "path", nullToEmpty(menu.getPath()),
+                        "description", nullToEmpty(menu.getDescription())
                 )
         );
     }

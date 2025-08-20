@@ -1,4 +1,5 @@
 /*
+
 package backend.kg_kuis_server.chatbot.controller;
 
 import backend.kg_kuis_server.chatbot.service.EmbeddingService;
@@ -13,10 +14,7 @@ public class EmbeddingController {
 
     private final EmbeddingService noticeEmbeddingService;
 
-    */
-/**
-     * 전체 재색인
-     *//*
+
 
     @PostMapping("/reindex")
     public String reindexAll() {
@@ -24,5 +22,6 @@ public class EmbeddingController {
         return "전체 재색인 완료";
     }
 }
+
 
 */
