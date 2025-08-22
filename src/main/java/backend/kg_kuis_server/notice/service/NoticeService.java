@@ -27,10 +27,6 @@ public class NoticeService {
      * 공지사항 조회 (카테고리 + 키워드 + 북마크 상단 고정)
      */
     @Transactional(readOnly = true)
-    @Cacheable(
-            value = "notices",
-            key = "#categoryId + ':' + (#keyword != null ? #keyword : 'all') + ':' + #pageable.pageNumber"
-    )
     public backend.kg_kuis_server.notice.dto.PageResponse<NoticeResponse> getNotices(Integer categoryId, String keyword, Pageable pageable) {
         Page<NoticeEntity> page;
 
@@ -64,10 +60,5 @@ public class NoticeService {
         return new backend.kg_kuis_server.notice.dto.PageResponse<NoticeResponse>(content, page.getNumber(), page.getSize(), page.getTotalElements());
     }
 
-    /**
-     * 공지사항 등록/수정/삭제 시 캐시 전체 삭제
-     */
-    @CacheEvict(value = "notices", allEntries = true)
-    public void clearNoticeCache() {
-    }
+
 }
