@@ -7,7 +7,7 @@ services:
     image: server-dev
     restart: always
     ports:
-      - 8080:8080
+      - 8081:8081
     environment:
       - TZ=Asia/Seoul
       - SPRING_PROFILES_ACTIVE=${PROFILE}
@@ -15,7 +15,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SPRING_DATA_REDIS_HOST=${HOST}
-      - SPRING_DATA_REDIS_PORT=${REDIS_PORT}
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - kuis
